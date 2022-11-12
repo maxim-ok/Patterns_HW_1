@@ -25,7 +25,7 @@ public class PatternsTest {
         ClientInfo clientInfo = DataGenerator.InfoFilling.clientInfo("ru");
 
         open("http://localhost:9999/");
-        $x("//span[@data-test-id='city']//input").val(clientInfo.getCity());
+        $x("//span[@data-test-id='city']//input").val("Самара");
         $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
         $x("//span[@data-test-id='date']//input").val(planningDate);
         $x("//span[@data-test-id='name']//input").val(clientInfo.getName());
