@@ -1,6 +1,8 @@
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.logevents.SelenideLogger;
 import data.ClientInfo;
-import org.junit.jupiter.api.Test;
+import io.qameta.allure.selenide.AllureSelenide;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.Keys;
 import utils.DataGenerator;
 
@@ -19,15 +21,31 @@ public class PatternsTest {
     }
 
 
+    @BeforeAll
+    static void setUpAll() {
+        SelenideLogger.addListener("allure", new AllureSelenide());
+    }
+
+    @AfterAll
+    static void tearDownAll() {
+        SelenideLogger.removeListener("allure");
+    }
+
+    @BeforeEach
+    void setup() {
+        open("http://localhost:9999/");
+    }
+
+
     @Test
+    @DisplayName("Позитивный кейс на бронирование даты доставки")
     void inputPositive() {
 
         String planningDate = generateDate(3);
 
         ClientInfo clientInfo = DataGenerator.InfoFilling.clientInfo("ru");
 
-        open("http://localhost:9999/");
-        $x("//span[@data-test-id='city']//input").val("Самара");
+        $x("//span[@data-test-id='city']//input").setValue(clientInfo.getCity());
         $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
         $x("//span[@data-test-id='date']//input").val(planningDate);
         $x("//span[@data-test-id='name']//input").val(clientInfo.getName());
@@ -41,6 +59,7 @@ public class PatternsTest {
 
 
     @Test
+    @DisplayName("Позитивный кейс на перебронирование даты доставки")
     void rebookingDate() {
 
         String planningDate = generateDate(3);
@@ -48,7 +67,6 @@ public class PatternsTest {
 
         ClientInfo clientInfo = DataGenerator.InfoFilling.clientInfo("ru");
 
-        open("http://localhost:9999/");
         $("[data-test-id=city] input").setValue(clientInfo.getCity());
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(planningDate);
